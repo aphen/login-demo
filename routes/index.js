@@ -52,6 +52,7 @@ router.route('/login')
         }
 
         var dbo = db.db('login');
+      
         dbo.collection("login").find({name: name, pwd: pwd}).toArray(function(err, result) {
           if (err) throw err;
           console.log(result);
@@ -62,7 +63,7 @@ router.route('/login')
             res.redirect('/home');
           }else{
             req.session.error='用户名或密码不正确';
-            res.redirect('/login');
+            res.render('login',{message: '用户名或密码不正确', title:"用户登录"});
           }
 
           db.close();

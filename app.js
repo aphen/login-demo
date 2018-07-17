@@ -56,25 +56,31 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+	console.log(err);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', {
+  	message: err.message,
+  	error: {}
+  });
 });
 
-//app.use(function(req, res, next) {
-//  res.locals.user = req.session.user;
-//  var err = req.session.error;
-//  delete req.session.error;
-//  res.locals.message = '';
-//
-//  if(err) {
-//    res.locals.message = '<div class="alert alert-warning">'  + err + '</div>';
-//  }
-//
-//  next();
-//});
+app.use(function(req, res, next) {
+	console.log(res.locals);
+    res.locals.user = req.session.user;
+    var err = req.session.error;
+    delete req.session.error;
+    res.locals.message = '';
+
+    if(err) {
+      res.locals.message = '<div class="alert alert-warning">'  + err + '</div>';
+    }
+
+    next();
+});
+
 module.exports = app;
