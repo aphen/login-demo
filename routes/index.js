@@ -3,41 +3,79 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+    res.render('index', { title: 'Express' });
 });
 
-router.post('/login', function(req, res, next){
-  var name = req.body.username;
-  var pwd = req.body.password;
-  console.log(name);
-  var MongoClient = require('mongodb').MongoClient;
-  var url = "mongodb://localhost:27017/login";
+router.route('/login')
+    .get(function(req, res) {
+      res.render('login', { title: '用户登录'});
+    })
+    .post(function(req, res, next){
+      var name = req.body.username;
+      var pwd = req.body.password;
 
-  MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
+      var MongoClient = require('mongodb').MongoClient;
+      var url = "mongodb://localhost:27017/login";
+      //mongoose.connect(url, function(error){
+      //  if (error) throw error;
+      //  console.log('数据库连接成功')
+      //
+      //  if(!name || !pwd){
+      //    console.log('用户名密码不能为空');
+      //    res.send('用户名不能为空');
+      //    return;
+      //  }
+      //
+      //
+      //});
 
-    console.log("数据库已创建!");
+      //var UserSchema = new mongoose.Schema({
+      //  username: String,
+      //  password: String,
+      //  salt: String,
+      //  hash: String
+      //});
+      //var User = mongoose.model('users', UserSchema);
 
-    if(!name || !pwd){
-      console.log('用户名密码不能为空');
-      res.send('用户名不能为空');
-      return;
-    }
+      MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
 
-    var dbo = db.db('login');
-    dbo.collection("login").find({name: name, pwd: pwd}).toArray(function(err, result) {
-      if (err) throw err;
-      console.log(result);
+        console.log("数据库已创建!");
 
-      if(result.length){
-        res.send('登录成功!');
-      }else{
-        res.send('用户名密码不正确!');
-      }
+        if(!name || !pwd){
+          console.log('用户名密码不能为空');
+          res.send('用户名和密码不能为空');
+          return;
+        }
 
-      db.close();
-    });
-  });
-})
+        var dbo = db.db('login');
+        dbo.collection("login").find({name: name, pwd: pwd}).toArray(function(err, result) {
+          if (err) throw err;
+          console.log(result);
+
+          if(result.length){
+            //res.send('登录成功!');
+            //res.session.user = result[0];
+            res.redirect('/home');
+          }else{
+            res.redirect('/login');
+          }
+
+          db.close();
+        });
+      });
+    })
+
+router.get('/logout',function(req, res) {
+  res.redirect('/');
+});
+
+router.get('/home', function(req, res){
+  var user = {
+    username: 'admin',
+    password: '123456'
+  }
+  res.render('home', {title: 'Home', user: user})
+});
 
 module.exports = router;
