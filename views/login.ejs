@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>用户登录</title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
-  <link rel='stylesheet' href='stylesheets/bootstrap-theme.css'>
-</head>
-<body>
+<% include header.ejs %>
+<%- message %>
 <h1>登录demo</h1>
 <form method="post" class="form-horizontal" role="form" style="width: 400px;">
   <div class="form-group">
@@ -27,7 +20,5 @@
     </div>
   </div>
 </form>
-</body>
-<script src="/javascripts/jquery.js"></script>
-<script src="/javascripts/bootstrap.js"></script>
-</html>
+
+<% include footer.ejs %>

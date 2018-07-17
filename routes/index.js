@@ -8,6 +8,9 @@ router.get('/', function(req, res, next) {
 
 router.route('/login')
     .get(function(req, res) {
+      if(req.session.user) {
+        res.redirect('/home');
+      }
       res.render('login', { title: '用户登录'});
     })
     .post(function(req, res, next){
@@ -55,9 +58,10 @@ router.route('/login')
 
           if(result.length){
             //res.send('登录成功!');
-            //res.session.user = result[0];
+            req.session.user = result[0];
             res.redirect('/home');
           }else{
+            req.session.error='用户名或密码不正确';
             res.redirect('/login');
           }
 
@@ -67,15 +71,18 @@ router.route('/login')
     })
 
 router.get('/logout',function(req, res) {
+  req.session.user = null;
   res.redirect('/');
 });
 
 router.get('/home', function(req, res){
-  var user = {
-    username: 'admin',
-    password: '123456'
-  }
-  res.render('home', {title: 'Home', user: user})
+  authentication(req, res);
+  res.render('home', {title: 'Home', user: req.session.user})
 });
 
+function authentication(req, res){
+  if(!req.session.user){
+    return res.redirect('/login');
+  }
+}
 module.exports = router;

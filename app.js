@@ -4,10 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 
 //采用connect-mongodb中间件作为Session存储
-//var session = require('express-session');
-//var Settings = require('./database/settings');
-//var MongoStore = require('connect-mongodb');
-//var db = require('./database/msession');
+var session = require('express-session');
+var Settings = require('./database/settings');
+var MongoStore = require('connect-mongodb');
+var db = require('./database/msession');
 
 var logger = require('morgan');
 //var hash = require('./pass').hash;
@@ -28,23 +28,26 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+//session配置
+// 使用 session 中间件
+app.use(session({
+  cookie: { maxAge: 600000 },
+  secret: Settings.COOKIE_SECRET,
+  //store: new MongoStore({
+  //  username: Settings.USERNAME,
+  //  password: Settings.PASSWORD,
+  //  url:'mongodb://localhost:27017/login',
+  //  db: db
+  //}),
+  resave: false, //添加 resave 选项
+  saveUninitialized: true, //添加 saveUninitialized 选项
+}))
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/logout', indexRouter);
 app.use('/home', indexRouter);
-
-//session配置
-
-//app.use(session({
-//  cookie: { maxAge: 600000 },
-//  secret: Settings.COOKIE_SECRET,
-//  store: new MongoStore({
-//    username: Settings.USERNAME,
-//    password: Settings.PASSWORD,
-//    url:'mongodb://localhost:27017/login',
-//    db: db
-//  })
-//}))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -62,4 +65,16 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+//app.use(function(req, res, next) {
+//  res.locals.user = req.session.user;
+//  var err = req.session.error;
+//  delete req.session.error;
+//  res.locals.message = '';
+//
+//  if(err) {
+//    res.locals.message = '<div class="alert alert-warning">'  + err + '</div>';
+//  }
+//
+//  next();
+//});
 module.exports = app;

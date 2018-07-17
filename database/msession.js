@@ -8,11 +8,12 @@ var db = new Db(
     Settings.DB,
     new Server(
         Settings.HOST,
-        Settings.PORT, {
+        Settings.PORT,
+        {
             auto_reconnect:true,
             native_parser: true
         }
     ),
-    {safe: false}
+    {safe: true}
 );
 module.exports = db;
