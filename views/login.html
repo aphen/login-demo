@@ -1,7 +1,7 @@
 <% include header.html %>
 <h1>登录demo</h1>
 <%- message %>
-<form method="post" class="form-horizontal" role="form" style="width: 400px;">
+<form class="form-horizontal" role="form" style="width: 400px;">
   <div class="form-group">
     <label for="firstname" class="col-sm-4 control-label">账号：</label>
     <div class="col-sm-8">
@@ -16,9 +16,24 @@
   </div>
   <div class="form-group">
     <div class="col-sm-offset-4 col-sm-8">
-      <button type="submit" class="btn btn-success">登录</button>
+      <button type="button" class="btn btn-success" id="login">登录</button>
     </div>
   </div>
+  <div class="form-group">
+    <a href="register" class="btn btn-info col-sm-2 col-sm-offset-10" id="register0">注册</a>
+  </div>
 </form>
-
+<script>
+  $(function(){
+    $('#login').click(function(){
+      var data = {
+        name: $('#username').val(),
+        pwd: $('#password').val()
+      }
+      $.post('/login', data, function(response){
+          location.href = 'home';
+      })
+    })
+  })
+</script>
 <% include footer.html %>

@@ -16,7 +16,10 @@ var mongoose = require('mongoose');
 var multer = require('multer');
 global.dbHandel = require('./database/dbHandel');
 global.db = mongoose.connect(Settings.URL);
-
+// 连接成功操作
+mongoose.connection.on("connected",function(){
+  console.log("MongoDB connected success.")
+})
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 

@@ -6,7 +6,7 @@ var schema = mongoose.Schema;
 var models = require('./models');
 
 for(var m in models){
-    mongoose.model(m, new schema(models[m]));
+    mongoose.model(m, new schema(models[m]), m);
 }
 
 module.exports = {

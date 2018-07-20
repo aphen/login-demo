@@ -34,7 +34,8 @@ router.route('/login')
                     //res.send(404);
                 }else{
                     req.session.user = doc;
-                    res.send(200);
+                    res.redirect('/home')
+                    //res.send(200);
                 }
             }
         })
