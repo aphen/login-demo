@@ -30,19 +30,32 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 //session配置
-// 使用 session 中间件
 app.use(session({
   cookie: { maxAge: 600000 },
   secret: Settings.COOKIE_SECRET,
   //store: new MongoStore({
-  //  username: Settings.USERNAME,
-  //  password: Settings.PASSWORD,
-  //  url:'mongodb://localhost:27017/login',
+  //  //username: Settings.USERNAME,
+  //  //password: Settings.PASSWORD,
+  //  //url:'mongodb://localhost:27017/login',
   //  db: db
   //}),
   resave: false, //添加 resave 选项
   saveUninitialized: true, //添加 saveUninitialized 选项
-}))
+}));
+
+app.use(function(req, res, next) {
+  console.log(res.locals);
+  res.locals.user = req.session.user;
+  var err = req.session.error;
+  delete req.session.error;
+  res.locals.message = '';
+
+  if(err) {
+    res.locals.message = '<div class="alert alert-warning">'  + err + '</div>';
+  }
+
+  next();
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -69,18 +82,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-app.use(function(req, res, next) {
-	console.log(res.locals);
-    res.locals.user = req.session.user;
-    var err = req.session.error;
-    delete req.session.error;
-    res.locals.message = '';
 
-    if(err) {
-      res.locals.message = '<div class="alert alert-warning">'  + err + '</div>';
-    }
-
-    next();
-});
 
 module.exports = app;
