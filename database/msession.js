@@ -14,6 +14,6 @@ var db = new Db(
             native_parser: true
         }
     ),
-    {safe: true}
+    {safe: false}
 );
 module.exports = db;
