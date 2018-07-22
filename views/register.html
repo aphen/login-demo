@@ -1,7 +1,7 @@
 <% include header.html %>
 <div class="container">
     <%- message %>
-    <form class="col-sm-offset-4 col-sm-4 form-horizontal" role="form" method="post" onsubmit="return false">
+    <form class="col-sm-offset-4 col-sm-4 form-horizontal" role="form"  onsubmit="return false">
         <fieldset>
             <legend></legend>
             <div class="panel panel-default">
@@ -44,4 +44,35 @@
         </fieldset>
     </form>
 </div>
+<script>
+    $(function () {
+        $("#login1").click(function () {
+            location.href = 'login';
+        });
+        $("#register1").click(function () {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            var password1 = $("#password1").val();
+            if (password !== password1) {
+                $("#password").css("border", "1px solid red");
+                $("#password1").css("border", "1px solid red");
+            } else if (password === password1) {
+                var data = { "name": username, "pwd": password };
+                $.ajax({
+                    url: '/register',
+                    type: 'post',
+                    data: data,
+                    success: function (data, status) {
+                        if (status == 'success') {
+                            location.href = 'login';
+                        }
+                    },
+                    error: function (data, err) {
+                        location.href = 'register';
+                    }
+                });
+            }
+        });
+    });
+</script>
 <% include footer.html %>

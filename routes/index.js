@@ -14,28 +14,30 @@ router.route('/login')
       res.render('login', { title: '用户登录'});
     })
     .post(function(req, res, next){
-      var name = req.body.username;
-      var pwd = req.body.password;
+      console.log(req.body);
+      var name = req.body.name;
+      var pwd = req.body.pwd;
         //从model中获取user对像
         var user = global.dbHandel.getModel('login');
        // var uname = req.body.uname; // 获取post提交来的数据
         user.findOne({name: name}, function(err, doc){
-            console.log(doc);
+            console.log(432432);
+          console.log(doc);
             if(err){
                 res.send(500);
             }else if (!doc){
                 req.session.error = '用户名不存在';
-                res.redirect('/login');
-                //res.send(404);
+                //res.redirect('/login');
+                res.send(500);
             }else{
                 if(pwd != doc.pwd){
                     req.session.error = '密码错误';
-                    res.redirect('/login');
-                    //res.send(404);
+                    //res.redirect('/login');
+                    res.send(500);
                 }else{
                     req.session.user = doc;
-                    res.redirect('/home')
-                    //res.send(200);
+                    //res.redirect('/home')
+                    res.send(200);
                 }
             }
         })
@@ -94,8 +96,35 @@ router.route('/register')
       res.render('register', { title: '用户注册'});
     })
     .post(function(req, res, next) {
-      var name = req.body.username;
-      var pwd = req.body.password;
+      var name = req.body.name;
+      var pwd = req.body.pwd;
+
+      var user = global.dbHandel.getModel('login');
+      user.findOne({name: name}, function(err, doc) {
+        console.log(doc);
+        if(err){
+          res.send(500);
+          res.session.error = '网络异常错误';
+          console.log(err);
+        }else if(doc){
+          req.session.error = '用户名已存在';
+          res.send(500);
+        } else {
+          user.create({
+            name: name,
+            pwd: pwd
+          }, function(err, doc) {
+            if(err){
+              res.send(500);
+              console.log(err);
+            }else{
+              req.session.error = '用户名创建成功'
+              res.send(200);
+            
+            }
+          })
+        }
+      })
 
     })
 router.get('/logout',function(req, res) {
