@@ -107,8 +107,8 @@ router.route('/register')
           res.session.error = '网络异常错误';
           console.log(err);
         }else if(doc){
-          req.session.error = '用户名已存在';
-          res.send(500);
+          //req.session.error = '用户名已存在';
+          res.send({error: '用户名已经存在'});
         } else {
           user.create({
             name: name,

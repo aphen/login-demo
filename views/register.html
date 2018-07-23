@@ -1,6 +1,7 @@
 <% include header.html %>
 <div class="container">
     <%- message %>
+    <div class="alert alert-warning error"></div>
     <form class="col-sm-offset-4 col-sm-4 form-horizontal" role="form"  onsubmit="return false">
         <fieldset>
             <legend></legend>
@@ -57,18 +58,21 @@
                 $("#password").css("border", "1px solid red");
                 $("#password1").css("border", "1px solid red");
             } else if (password === password1) {
-                var data = { "name": username, "pwd": password };
+                var data = { "name": username, "pwd": password, 'test': 'test' };
                 $.ajax({
                     url: '/register',
                     type: 'post',
                     data: data,
                     success: function (data, status) {
-                        if (status == 'success') {
+                        if (status == 'success' && !data.error) {
                             location.href = 'login';
+                        }else{
+                            $('.error').text(data.error);
                         }
                     },
                     error: function (data, err) {
-                        location.href = 'register';
+                        alert(err);
+                        //location.href = 'register';
                     }
                 });
             }
